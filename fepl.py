@@ -63,12 +63,17 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
     bc_keys = list(bc_expand.keys())
     bc_keys.sort(key=len, reverse=True)
 
+    empty_lines = 0
     for li, L in enumerate(inp):
         line_number = li + 1
         L = L.rstrip()
+
         if not L:
-            print('', file=outp)
+            empty_lines += 1
             continue  # for li, L
+        if empty_lines > 0:
+            print('\n'.join([''] * empty_lines), file=outp)
+            empty_lines = 0
 
         # split line into head and body
         m = re.match(r'( *[-D/+AVTL]|)(.*)', L)
