@@ -71,7 +71,7 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
             continue  # for li, L
 
         # split line into head and body
-        m = re.match(r'([ AVTL]*[-D/+]|[ AVTL]+|)(.*)', L)
+        m = re.match(r'( *[-D/+AVTL]|)(.*)', L)
         if not m:
             raise ValueError("line %d: invalid syntax" % line_number)
 

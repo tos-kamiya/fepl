@@ -1,0 +1,9 @@
+D 整数型関数: Sum(整数型: Nums[])
+D 整数型: i, NumCount, S
+
+- NumCount <- Nums[]の要素の個数
+- S <- 0
+T i: 1, i <= NumCount, 1
+ - S <- S + NumCount[i]
+L
+- return (S)
