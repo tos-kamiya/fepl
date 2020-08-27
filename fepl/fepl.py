@@ -6,6 +6,11 @@ import wcwidth
 import docopt
 
 
+_script_dir = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
+with open(os.path.join(_script_dir, 'VERSION.txt')) as _inp:
+    __version__ = _inp.readline().rstrip()
+
+
 FE_PSEUDO_LANG_NOTATION = """
 [Control structure (head of line)]
 D   declaration
@@ -143,7 +148,7 @@ Options:
 
 
 def main():
-    args = docopt.docopt(__doc__)
+    args = docopt.docopt(__doc__, version=__version__)
     if args['--show-notation']:
         do_show_notation()
         return

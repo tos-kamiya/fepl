@@ -1,15 +1,21 @@
-fepl.py
-========
+fepl
+====
 
 基本情報の疑似言語のマークアップ
 
-## 使い方
+## インストール
 
 ```sh
-python3 fepl.py 入力ファイル
+python3 -m pip install git+https://github.com/tos-kamiya/fepl
 ```
 
-## 実行例
+## 実行
+
+```sh
+fepl 入力ファイル
+```
+
+### 実行例
 
 ```sh
 $ cat sampleinput.txt
@@ -28,7 +34,7 @@ A n <= 2
  L
  - print(c)
 V
-$ python3 fepl.py sampleinput.txt
+$ fepl sampleinput.txt
 ◯ 手続き： fibo(n)
 /* この手続きは引数として、1から始まる整数で、フィボナッチ数の何番目の数字を
    出力するかを受け取ります。 */
@@ -82,6 +88,10 @@ L   ループ文の終了
 
 ## ライセンス
 
-Public Domain.
+Public Domain
 
+## requirements.txtを取り出す
 
+```sh
+sed -e '1,/install_requires =/ d' < setup.cfg
+```
