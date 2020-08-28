@@ -1,0 +1,10 @@
+◯ 整数型関数: 規定重量分取得(実数型: Weights[], 実数型: TargetWeight)
+◯ 整数型: I
+◯ 実数型: S
+
+・ I ← 1
+・ S ← 0.0
+█ S ← S + Weights[I]
+│ ・ I ← I + 1
+█ S ＜ TargetWeight
+・ return (I)
