@@ -88,7 +88,7 @@ L   ループ文の終了
 
 ## ライセンス
 
-Public Domain
+Public Domain/Unlicense
 
 ## requirements.txtを取り出す
 
