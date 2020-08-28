@@ -4,7 +4,8 @@
 
 ・ I ← 1
 ・ S ← 0.0
-█ S ← S + Weights[I]
+█
+│ ・ S ← S + Weights[I]
 │ ・ I ← I + 1
 █ S ＜ TargetWeight
 ・ return (I)

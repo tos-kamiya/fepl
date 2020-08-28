@@ -4,7 +4,8 @@ D 実数型: S
 
 - I <- 1
 - S <- 0.0
-T S <- S + Weights[I]
+T
+ - S <- S + Weights[I]
  - I <- I + 1
 L S < TargetWeight
 - return (I)
