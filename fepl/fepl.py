@@ -1,9 +1,12 @@
-import re
 import os
 import sys
 
 import wcwidth
 import docopt
+
+
+class FeplSyntaxError(ValueError):
+    pass
 
 
 _script_dir = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
@@ -12,11 +15,10 @@ with open(os.path.join(_script_dir, 'VERSION.txt')) as _inp:
 
 
 FE_PSEUDO_LANG_NOTATION = """
-[Control structure (head of line)]
+[Control structure (fist char of line)]
 D   declaration
 -   some statement
 /   comment
-    indent (space char)
 A   begin of branch statement
 +   separator of true/false branch (i.e. `else`)
 V   end of branch statement
@@ -44,30 +46,32 @@ FE_PSEUDO_EXAMPLE = """
 D 手続き： fibo（n）
 / この手続きは引数として、1から始まる整数で、フィボナッチ数の何番目の数字を出力するかを受け取ります。
 A n <= 2
- - print(1)
+  - print(1)
 +
- - a <- 1
- - b <- 1
- T n > 2
-  - c <- a /ADD b
-  - a <- b
-  - b <- c
-  - n <- n /SUB 1
- L
- - print(c)
+  - a <- 1
+  - b <- 1
+  T n > 2
+    - c <- a /ADD b
+    - a <- b
+    - b <- c
+    - n <- n /SUB 1
+  L
+  - print(c)
 V
 """
 
 
 def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
-    hc_expand = {'D': '◯', '-': '・', 'A': '▲', 'V': '▼', 'T': '█', 'L': '█', ' ': '│'}
-    hc_expand2 = {'D': '　', '-': '　', 'A': '│', 'V': '　', 'T': '│', 'L': '　', ' ': '│'}
+    vbar = '│'
+    hc_expand = {'D': '◯', '-': '・', 'A': '▲', 'V': '▼', '+': '┼', 'T': '█', 'L': '█', '/': '/*'}
+    hc_expand2 = {'D': '　', '-': '　', 'A': '│', 'V': '　', '+': '　', 'T': '│', 'L': '　', '/': '  '}
     bc_expand = {'/MOD': '％', '/ADD': '＋', '/SUB': 'ー', '/DIV': '÷', '/MUL': '✕',
             '<-': '←', '<=': '≦', '>=': '≧', '!=': '≠',
-            '<': '＜', '>': '＞', '=': '＝' }
+            '<': '＜', '>': '＞', '=': '＝'}
     bc_keys = list(bc_expand.keys())
     bc_keys.sort(key=len, reverse=True)
 
+    stack = []
     empty_lines = 0
     for li, L in enumerate(inp):
         line_number = li + 1
@@ -81,38 +85,57 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
             empty_lines = 0
 
         # split line into head and body
-        m = re.match(r'( *[-D/+AVTL]|)(.*)', L)
-        if not m:
-            raise ValueError("line %d: invalid syntax" % line_number)
-
-        h, b = m.group(1), m.group(2)
-        h = h.rstrip()
-        b = b.lstrip()
+        ls = L.lstrip()
+        if not ls:
+            h = b = ''
+        else:
+            h, b = ls[0], ls[1:].lstrip()
 
         # make picture of header
-        fsth = []
-        sndh = []
-        for hci, hc in enumerate(h):
-            if hc == '/':
-                fsth.append('/*')
-                sndh.append('  ')
-                b = h[hci+1:] + b + ' */'
-            elif hc == '+':
-                fsth.append('┼')
-                sndh.append('　')
-                assert b == ''
-                curlen = wcwidth.wcswidth(' '.join(fsth))
-                while curlen + wcwidth.wcswidth(b + '─') < line_width:
-                    b = b + '─'
-                fsth[-1] = fsth[-1] + b
-                b = ''
-            else:
-                fsth.append(hc_expand[hc])
-                sndh.append(hc_expand2[hc])
-
-        fh = ' '.join(fsth)
-        sh = ' '.join(sndh)
-
+        if h == '':
+            if b != '':
+                raise FeplSyntaxError("line %d: expected one of chars `-+/ADLTV`" % line_number)
+            fh = sh = ' '.join([vbar] * len(stack))
+        elif h in ('L', 'V'):
+            if h == 'V':
+                if not stack:
+                    raise FeplSyntaxError("line %d: no corresponding `A` found for `V` at line %d" % (line_number, line_number))
+                if stack[-1][0] != 'A':
+                    mark, atline = stack[-1]
+                    raise FeplSyntaxError("line %d: no closing `%s` at line %d" % (line_number, mark, atline))
+                stack.pop()
+            elif h == 'L':
+                if not stack:
+                    raise FeplSyntaxError("line %d: no corresponding `T` found for `L` at line %d" % (line_number, line_number))
+                if stack[-1][0] != 'T':
+                    mark, atline = stack[-1]
+                    raise FeplSyntaxError("line %d: no closing `%s` at line %d" % (line_number, mark, atline))
+                stack.pop()
+            fh = ' '.join([vbar] * len(stack) + [hc_expand[h]])
+            sh = ' '.join([vbar] * len(stack) + [hc_expand2[h]])
+        elif h == '+':
+            if not stack:
+                raise FeplSyntaxError("line %d: no corresponding `A` found for `V` at line %d" % (line_number, line_number))
+            if stack[-1][0] != 'A':
+                mark, atline = stack[-1]
+                raise FeplSyntaxError("line %d: no closing `%s` at line %d" % (line_number, mark, atline))
+            fh = ' '.join([vbar] * (len(stack) - 1) + [hc_expand[h]])
+            sh = ' '.join([vbar] * (len(stack) - 1) + [hc_expand2[h]])
+            bw = wcwidth.wcswidth('─')
+            curlen = wcwidth.wcswidth(fh) + wcwidth.wcswidth(b)
+            while curlen + bw < line_width:
+                fh += '─'
+                curlen += bw
+        else:
+            if h not in hc_expand:
+                raise FeplSyntaxError("line %d: invalid char" % line_number)
+            fh = ' '.join([vbar] * len(stack) + [hc_expand[h]])
+            sh = ' '.join([vbar] * len(stack) + [hc_expand2[h]])
+            if h in ('A', 'T'):
+                stack.append((h, line_number))
+            elif h == '/':
+                b += ' */'
+        
         # format and print header and body
         if not b:
             print(fh, file=outp)
@@ -127,6 +150,10 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
                     b = b[1:]
                 print(r, file=outp)
                 r = sh + ' '
+
+    if stack:
+        mark, atline = stack[-1]
+        raise FeplSyntaxError("line EOF: no closing `%s` at line %d" % (mark, atline))
 
 
 def do_show_notation():

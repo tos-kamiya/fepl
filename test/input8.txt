@@ -1,0 +1,2 @@
+T i: 1, i <= NumCount, 1
+ - S <- S + NumCount[i]

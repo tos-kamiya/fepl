@@ -1,0 +1,2 @@
+ - S <- S + NumCount[i]
+L

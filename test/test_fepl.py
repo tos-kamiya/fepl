@@ -46,3 +46,45 @@ class FeplTest(unittest.TestCase):
         outp = io.StringIO('')
         do_process_fe_pseudo_lang(outp, inp, 78)
         self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected4.txt')))
+
+    def test_input5(self):
+        inp = io.StringIO(read_resource_file('input5.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
+
+    def test_input6(self):
+        inp = io.StringIO(read_resource_file('input6.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
+
+    def test_input7(self):
+        inp = io.StringIO(read_resource_file('input7.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
+
+    def test_input8(self):
+        inp = io.StringIO(read_resource_file('input8.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
+
+    def test_input9(self):
+        inp = io.StringIO(read_resource_file('input9.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
+
+    def test_input10(self):
+        inp = io.StringIO(read_resource_file('input10.txt'))
+        outp = io.StringIO('')
+        do_process_fe_pseudo_lang(outp, inp, 78)
+        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected10.txt')))
+
+    def test_input11(self):
+        inp = io.StringIO(read_resource_file('input11.txt'))
+        outp = io.StringIO('')
+        do_process_fe_pseudo_lang(outp, inp, 78)
+        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected11.txt')))
