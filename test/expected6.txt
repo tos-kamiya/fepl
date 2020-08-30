@@ -1,0 +1,6 @@
+・ NumCount ← Nums[]の要素の個数
+・ S ← 0                             ⬅ α
+█ i: 1, i ≦ NumCount, 1
+│ ・ S ← S + NumCount[i]
+█
+・ return (S)

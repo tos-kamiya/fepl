@@ -40,6 +40,7 @@ L   end of loop statement
 /MUL  ✕
 /[    [\u0332\u0305 \u0332\u0305 \u0332\u0305
 /]    \u0332\u0305 \u0332\u0305 \u0332\u0305]
+/;<|-     (right-aligned) ⬅
 """[1:]
 
 
@@ -69,7 +70,8 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
     hc_expand2 = {'D': '　', '-': '　', 'A': '│', 'V': '　', '+': '　', 'T': '│', 'L': '　', '/': '  '}
     bc_expand = {'/MOD': '％', '/ADD': '＋', '/SUB': 'ー', '/DIV': '÷', '/MUL': '✕',
             '<-': '←', '<=': '≦', '>=': '≧', '!=': '≠', '<': '＜', '>': '＞', '=': '＝',
-            '/[': '[\u0332\u0305 \u0332\u0305 \u0332\u0305', '/]': '\u0332\u0305 \u0332\u0305 \u0332\u0305]'}
+            '/[': '[\u0332\u0305 \u0332\u0305 \u0332\u0305', '/]': '\u0332\u0305 \u0332\u0305 \u0332\u0305]',
+            '<|-': '⬅'}
     bc_keys = list(bc_expand.keys())
     bc_keys.sort(key=len, reverse=True)
 
@@ -145,11 +147,21 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
             for bc in bc_keys:
                 if b.find(bc) >= 0:
                     b = b.replace(bc, bc_expand[bc])
+            i = b.find('/;')
+            if i >= 0:
+                b, t = b[:i], b[i + len('/;'):]
+            else:
+                t = ''
             r = fh + ' '
             while b:
                 while b and wcwidth.wcswidth(r + b[0]) < line_width:
                     r = r + b[0]
                     b = b[1:]
+                if t:
+                    w = wcwidth.wcswidth(r + t)
+                    if w < line_width:
+                        r += ' ' * (line_width - w)
+                    r += t
                 print(r, file=outp)
                 r = sh + ' '
 
