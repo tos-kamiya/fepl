@@ -47,44 +47,44 @@ class FeplTest(unittest.TestCase):
         do_process_fe_pseudo_lang(outp, inp, 78)
         self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected4.txt')))
 
-    def test_input5(self):
-        inp = io.StringIO(read_resource_file('input5.txt'))
+    def test_syntaxerr1(self):
+        inp = io.StringIO(read_resource_file('syntaxerr1.txt'))
         with self.assertRaises(fepl.FeplSyntaxError) as cm:
             do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
         self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
 
-    def test_input6(self):
-        inp = io.StringIO(read_resource_file('input6.txt'))
+    def test_syntaxerr2(self):
+        inp = io.StringIO(read_resource_file('syntaxerr2.txt'))
         with self.assertRaises(fepl.FeplSyntaxError) as cm:
             do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
         self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
 
-    def test_input7(self):
-        inp = io.StringIO(read_resource_file('input7.txt'))
+    def test_syntaxerr3(self):
+        inp = io.StringIO(read_resource_file('syntaxerr3.txt'))
         with self.assertRaises(fepl.FeplSyntaxError) as cm:
             do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
         self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
 
-    def test_input8(self):
-        inp = io.StringIO(read_resource_file('input8.txt'))
+    def test_syntaxerr4(self):
+        inp = io.StringIO(read_resource_file('syntaxerr4.txt'))
         with self.assertRaises(fepl.FeplSyntaxError) as cm:
             do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
         self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
 
-    def test_input9(self):
-        inp = io.StringIO(read_resource_file('input9.txt'))
+    def test_syntaxerr5(self):
+        inp = io.StringIO(read_resource_file('syntaxerr5.txt'))
         with self.assertRaises(fepl.FeplSyntaxError) as cm:
             do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
         self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
 
-    def test_input10(self):
-        inp = io.StringIO(read_resource_file('input10.txt'))
+    def test_input_looseindent1(self):
+        inp = io.StringIO(read_resource_file('input_looseindent1.txt'))
         outp = io.StringIO('')
         do_process_fe_pseudo_lang(outp, inp, 78)
-        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected10.txt')))
+        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected_looseindent1.txt')))
 
-    def test_input11(self):
-        inp = io.StringIO(read_resource_file('input11.txt'))
+    def test_input_looseindent2(self):
+        inp = io.StringIO(read_resource_file('input_looseindent2.txt'))
         outp = io.StringIO('')
         do_process_fe_pseudo_lang(outp, inp, 78)
-        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected11.txt')))
+        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected_looseindent2.txt')))
