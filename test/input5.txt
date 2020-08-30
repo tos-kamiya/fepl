@@ -1,0 +1,15 @@
+D 整数型関数: fibo(整数型: n)
+D 整数型: t, u, v
+A n <= 2
+ - return (1)
++
+ - t <- 1
+ - u <- 1
+ T /[ a /]
+  - v <- t /ADD u
+  - t <- u
+  - u <- v
+  - n <- n /SUB 1
+ L
+ - return (v)
+V

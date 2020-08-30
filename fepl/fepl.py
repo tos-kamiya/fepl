@@ -15,7 +15,7 @@ with open(os.path.join(_script_dir, 'VERSION.txt')) as _inp:
 
 
 FE_PSEUDO_LANG_NOTATION = """
-[Control structure (fist char of line)]
+[Control structure] line starts either of the following chars after some space chars:
 D   declaration
 -   some statement
 /   comment
@@ -25,7 +25,7 @@ V   end of branch statement
 T   begin of loop statement
 L   end of loop statement
 
-[Operators (anywhere)]
+[Special symbols] the following patterns will be replaced.
 <-  ←
 <   ＜
 <=  ≦
@@ -38,25 +38,27 @@ L   end of loop statement
 /SUB  ー
 /DIV  ÷
 /MUL  ✕
+/[    [\u0332\u0305 \u0332\u0305 \u0332\u0305
+/]    \u0332\u0305 \u0332\u0305 \u0332\u0305]
 """[1:]
 
 
 FE_PSEUDO_EXAMPLE = """
-[Example]
-D 手続き： fibo（n）
-/ この手続きは引数として、1から始まる整数で、フィボナッチ数の何番目の数字を出力するかを受け取ります。
+[Input example]
+D integer-returning-function: fibo(integer: n)
+D integer: t, u, v
 A n <= 2
-  - print(1)
+  - return (1)
 +
-  - a <- 1
-  - b <- 1
+  - t <- 1
+  - u <- 1
   T n > 2
-    - c <- a /ADD b
-    - a <- b
-    - b <- c
-    - n <- n /SUB 1
+    - v <- t /ADD u
+    - t <- u
+    - u <- v
+    - n <- /[a/]
   L
-  - print(c)
+  - return (v)
 V
 """
 
@@ -66,8 +68,8 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
     hc_expand = {'D': '◯', '-': '・', 'A': '▲', 'V': '▼', '+': '┼', 'T': '█', 'L': '█', '/': '/*'}
     hc_expand2 = {'D': '　', '-': '　', 'A': '│', 'V': '　', '+': '　', 'T': '│', 'L': '　', '/': '  '}
     bc_expand = {'/MOD': '％', '/ADD': '＋', '/SUB': 'ー', '/DIV': '÷', '/MUL': '✕',
-            '<-': '←', '<=': '≦', '>=': '≧', '!=': '≠',
-            '<': '＜', '>': '＞', '=': '＝'}
+            '<-': '←', '<=': '≦', '>=': '≧', '!=': '≠', '<': '＜', '>': '＞', '=': '＝',
+            '/[': '[\u0332\u0305 \u0332\u0305 \u0332\u0305', '/]': '\u0332\u0305 \u0332\u0305 \u0332\u0305]'}
     bc_keys = list(bc_expand.keys())
     bc_keys.sort(key=len, reverse=True)
 

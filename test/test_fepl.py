@@ -88,3 +88,9 @@ class FeplTest(unittest.TestCase):
         outp = io.StringIO('')
         do_process_fe_pseudo_lang(outp, inp, 78)
         self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected_looseindent2.txt')))
+
+    def test_input5(self):
+        inp = io.StringIO(read_resource_file('input5.txt'))
+        outp = io.StringIO('')
+        do_process_fe_pseudo_lang(outp, inp, 78)
+        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected5.txt')))
