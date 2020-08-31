@@ -9,7 +9,7 @@ except:
     from fepl_core import do_process_fe_pseudo_lang
 
 
-_script_dir = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
+_script_dir = os.path.dirname(os.path.realpath(__file__))
 with open(os.path.join(_script_dir, 'VERSION.txt')) as _inp:
     __version__ = _inp.readline().rstrip()
 

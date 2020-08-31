@@ -6,7 +6,7 @@ import fepl
 from fepl import do_process_fe_pseudo_lang
 
 
-script_dir = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
+script_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def read_resource_file(fn):
