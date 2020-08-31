@@ -38,9 +38,8 @@ L   end of loop statement
 /SUB  ー
 /DIV  ÷
 /MUL  ✕
-/[    [\u0332\u0305 \u0332\u0305 \u0332\u0305
-/]    \u0332\u0305 \u0332\u0305 \u0332\u0305]
-/;<|-     (right-aligned) ⬅
+/[<sometext>/]     wrte-in box. 
+/;<|-              (right-aligned) ⬅
 """[1:]
 
 
@@ -69,9 +68,8 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
     hc_expand = {'D': '◯', '-': '・', 'A': '▲', 'V': '▼', '+': '┼', 'T': '█', 'L': '█', '/': '/*'}
     hc_expand2 = {'D': '　', '-': '　', 'A': '│', 'V': '　', '+': '　', 'T': '│', 'L': '　', '/': '  '}
     bc_expand = {'/MOD': '％', '/ADD': '＋', '/SUB': 'ー', '/DIV': '÷', '/MUL': '✕',
-            '<-': '←', '<=': '≦', '>=': '≧', '!=': '≠', '<': '＜', '>': '＞', '=': '＝',
-            '/[': '[\u0332\u0305 \u0332\u0305 \u0332\u0305', '/]': '\u0332\u0305 \u0332\u0305 \u0332\u0305]',
-            '<|-': '⬅'}
+            '<-': '←', '<=': '≦', '>=': '≧', '!=': '≠', '<': '＜', '>': '＞', '=': '＝', '<|-': '⬅'}
+    bc_writein_box = ('/[', '/]')
     bc_keys = list(bc_expand.keys())
     bc_keys.sort(key=len, reverse=True)
 
@@ -144,15 +142,35 @@ def do_process_fe_pseudo_lang(outp, inp, line_width, input_file=None):
         if not b:
             print(fh, file=outp)
         else:
+            # special symbols
             for bc in bc_keys:
                 if b.find(bc) >= 0:
                     b = b.replace(bc, bc_expand[bc])
+
+            # write-in box
+            i = 0
+            while True:
+                i = b.find(bc_writein_box[0])
+                j = b.find(bc_writein_box[1], i + 1)
+                if i >= 0:
+                    if j < 0:
+                        raise FeplSyntaxError("line %d: unmatching /[.../]" % line_number)
+                    enclosed_text = b[i + len(bc_writein_box[0]):j]
+                    b = b[:i] + '\u0332\u0305'.join('[' + enclosed_text + ']') + b[j + len(bc_writein_box[1]):]
+                    i = j + 1
+                else:
+                    if j >= 0:
+                        raise FeplSyntaxError("line %d: unmatching /[.../]" % line_number)
+                    break  # while True
+            
+            # right alignment
             i = b.find('/;')
             if i >= 0:
                 b, t = b[:i], b[i + len('/;'):]
             else:
                 t = ''
             r = fh + ' '
+
             while b:
                 while b and wcwidth.wcswidth(r + b[0]) < line_width:
                     r = r + b[0]

@@ -100,3 +100,21 @@ class FeplTest(unittest.TestCase):
         outp = io.StringIO('')
         do_process_fe_pseudo_lang(outp, inp, 40)
         self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected6.txt')))
+
+    def test_input7(self):
+        inp = io.StringIO(read_resource_file('input7.txt'))
+        outp = io.StringIO('')
+        do_process_fe_pseudo_lang(outp, inp, 40)
+        self.assertEqual(R(outp.getvalue()), R(read_resource_file('expected7.txt')))
+
+    def test_syntaxerr_writeinbox_unmatch(self):
+        inp = io.StringIO(read_resource_file('syntaxerr_writeinbox_unmatch.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
+
+    def test_syntaxerr_writeinbox_unmatch2(self):
+        inp = io.StringIO(read_resource_file('syntaxerr_writeinbox_unmatch2.txt'))
+        with self.assertRaises(fepl.FeplSyntaxError) as cm:
+            do_process_fe_pseudo_lang(io.StringIO(''), inp, 78)
+        self.assertIsInstance(cm.exception, fepl.FeplSyntaxError)
