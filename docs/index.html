@@ -6,6 +6,15 @@
 * {
     font-family: monospace;
 }
+.waku {
+    display: flex;
+}
+.midashi {
+    padding: 0.5em;
+    background-color: #eee;
+    float: left;
+    width: 4em;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
 </script>
@@ -14,10 +23,10 @@
 </head>
 <body onload="brython()">
 <h2>feplマークアップのデモ</h2>
+<div class="waku">
+<div class="midashi"><b>入力</b></div>
 <div>
-<div style="float: left;"><b>入力</b></div>
-<div>
-<textarea id="fepl_src" cols="80" rows="20">
+<textarea id="fepl_src" cols="80" rows="20" style="padding: 0.5em;">
 </textarea>
 </div>
 </div>
@@ -25,9 +34,9 @@
 <button id="render">変換する</button><br>
 <button id="sample1">サンプルを「入力」に設定する</button>
 </div>
-<div>
-<div style="float:left;"><b>変換結果</b></div>
-<div id="feplrendered" style="float: left; padding: 0.5em; border: 1px solid #222;">&nbsp;
+<div class="waku">
+<div class="midashi"><b>変換結果</b></div>
+<div id="feplrendered" style="float: left; border: 1px solid #222; padding: 0.5em">&nbsp;
 </div>
 </div>
 <script type="text/python">
