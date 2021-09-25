@@ -63,7 +63,7 @@ def parse_struct_iter(inp, line_width):
                 curlen += bw
         else:
             if h not in _hc_expand:
-                raise FeplSyntaxError("line %d: invalid char" % line_number)
+                raise FeplSyntaxError("line %d: invalid char: 0x%s" % (line_number, hex(ord(h))))
             fh = ' '.join([_vbar] * len(stack) + [_hc_expand[h]])
             sh = ' '.join([_vbar] * len(stack) + [_hc_expand2[h]])
             if h in ('A', 'T'):
@@ -112,11 +112,12 @@ def expand_special_symbols(li, b):
     return b
 
 
-def do_process_fe_pseudo_lang(outp, inp, line_width):
+def process_fe_pseudo_lang(input_lines, line_width):
+    output_lines = []
     prev_li = -1
-    for li, fh, sh, b in parse_struct_iter(inp, line_width):
+    for li, fh, sh, b in parse_struct_iter(input_lines, line_width):
         while prev_li < li - 1:
-            print('', file=outp)  # print empty input lines
+            output_lines.append('')  # print empty input lines
             prev_li += 1
 
         b = expand_special_symbols(li, b)
@@ -140,9 +141,12 @@ def do_process_fe_pseudo_lang(outp, inp, line_width):
                     if w < line_width:
                         r += ' ' * (line_width - w)
                     r += t
-                print(r, file=outp)
+                output_lines.append(r)
                 r = sh + ' '
         else:
-            print(fh, file=outp)
+            output_lines.append(fh)
         
         prev_li = li
+    
+    return output_lines
+

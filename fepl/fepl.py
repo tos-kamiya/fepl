@@ -4,9 +4,9 @@ import sys
 import docopt
 
 try:
-    from . import do_process_fe_pseudo_lang
+    from . import process_fe_pseudo_lang
 except:
-    from fepl_core import do_process_fe_pseudo_lang
+    from fepl_core import process_fe_pseudo_lang
 
 
 _script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -92,14 +92,17 @@ def main():
     line_width = int(args['-w'])
 
     inp = open(input_file, 'r') if input_file is not None else sys.stdin
-    outp = open(output_file, 'w') if output_file is not None else sys.stdout
-    
-    do_process_fe_pseudo_lang(outp, inp, line_width)
+
+    output_lines = process_fe_pseudo_lang(outp, inp, line_width)
+
+    if output_file:
+        with open(output_file, 'w') as outp:
+            print('\n'.join(output_lines), file=outp)
+    else:
+        print('\n'.join(output_lines))
 
     if input_file is not None:
         inp.close()
-    if output_file is not None:
-        outp.close()
 
 
 if __name__ == '__main__':

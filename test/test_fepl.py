@@ -3,10 +3,15 @@ import io
 import os
 
 import fepl
-from fepl import do_process_fe_pseudo_lang
+from fepl import process_fe_pseudo_lang
 
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
+
+
+def do_process_fe_pseudo_lang(outp, input_lines, line_width):
+    output_lines = process_fe_pseudo_lang(input_lines, line_width)
+    print('\n'.join(output_lines), file=outp)
 
 
 def read_resource_file(fn):
