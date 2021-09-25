@@ -3,6 +3,10 @@ fepl
 
 基本情報の疑似言語のマークアップ
 
+##  デモ
+
+→ [デモページ](https://tos-kamiya.github.io/fepl/)
+
 ## インストール
 
 ```sh
