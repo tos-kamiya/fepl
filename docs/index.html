@@ -1,0 +1,79 @@
+<!DOCTYPE html lang="ja">
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* {
+    font-family: monospace;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+</script>
+</head>
+<body onload="brython()">
+<h2>feplマークアップのデモ</h2>
+<div>
+<div style="float: left;"><b>入力</b></div>
+<div>
+<textarea id="fepl_src" cols="80" rows="20">
+</textarea>
+</div>
+</div>
+<div style="margin: 1em;">
+<button id="render">変換する</button><br>
+<button id="sample1">サンプルを「入力」に設定する</button>
+</div>
+<div>
+<div style="float:left;"><b>変換結果</b></div>
+<div id="feplrendered" style="float: left; padding: 0.5em; border: 1px solid #222;">&nbsp;
+</div>
+</div>
+<script type="text/python">
+from browser import document
+
+import fepl_core
+
+
+def do_set_sample1(ev):
+    document["fepl_src"].value = """
+D 整数型関数: fibo(整数型: n)
+D 整数型: t, u, v
+
+A n <= 2 /;<|- α
+- return (1)
++
+- t <- 1
+- u <- 1
+T /[    a    /]
+    - v <- t /ADD u
+    - t <- u
+    - u <- v
+    - n <- n /SUB 1
+L
+- return (v)
+V
+"""[1:-1]
+
+
+def do_rendering(ev):
+    lines = document['fepl_src'].value.split('\n')
+    try:
+        output_lines = fepl_core.process_fe_pseudo_lang(lines, 80)
+    except fepl_core.FeplSyntaxError as e:
+        document["feplrendered"].html = "<span style='color: red;'>%s</span>" % repr(e)
+        return
+
+    output_text = '\n'.join(output_lines)
+    output_text = output_text.replace('<', '&lt;')
+    output_text = output_text.replace('\u0332\u0305', '<u>\u203e</u>')
+    output_text = output_text.replace('\n', '<br>')
+    document["feplrendered"].html = output_text
+
+
+document["render"].bind("click", do_rendering)
+document["sample1"].bind("click", do_set_sample1)
+</script>
+</body>
+</html>
