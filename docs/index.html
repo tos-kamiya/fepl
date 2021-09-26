@@ -15,6 +15,16 @@
     float: left;
     width: 4em;
 }
+.yose-box {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.yose-right {
+    margin: 0;
+    padding: 0;
+    text-align: right; float: right;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
 </script>
@@ -66,6 +76,17 @@ V
 """[1:-1]
 
 
+def convert_for_html(s):
+    r = s.replace('<', '&lt;')
+    r = r.replace('\u0332\u0305', '<u>\u203e</u>')
+    i = r.find('   ⬅')
+    if i >= 0:
+        r = '<div class="yose-box">' + r[:i] + '<span class="yose-right">' + r[i:] + '</span></div>'
+    else:
+        r = r + '<br>'
+    return r
+
+
 def do_rendering(ev):
     lines = document['fepl_src'].value.split('\n')
     try:
@@ -74,11 +95,8 @@ def do_rendering(ev):
         document["feplrendered"].html = "<span style='color: red;'>%s</span>" % repr(e)
         return
 
-    output_text = '\n'.join(output_lines)
-    output_text = output_text.replace('<', '&lt;')
-    output_text = output_text.replace('\u0332\u0305', '<u>\u203e</u>')
-    output_text = output_text.replace('\n', '<br>')
-    document["feplrendered"].html = output_text
+    output_lines = [convert_for_html(L) for L in output_lines]
+    document["feplrendered"].html = ''.join(output_lines)
 
 
 document["render"].bind("click", do_rendering)
